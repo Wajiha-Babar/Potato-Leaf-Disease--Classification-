@@ -1,241 +1,369 @@
-Potato Leaf Disease Research
+<div align="center">
 
-A deep learning based research project for **potato leaf disease classification** under **uncontrolled field conditions**. This repository contains the complete experimental workflow including data preparation, multi-model training, binary and multiclass classification experiments, model evaluation, and result visualization.
+# 🍃 Potato Leaf Disease Classification
 
-Project Overview
+### *Deep Learning-Based Potato Leaf Disease Classification under Uncontrolled Field Conditions*
 
-The main goal of this project is to analyze and classify potato leaf images using deep learning models in a research-oriented setting. The work focuses on handling field-condition image challenges such as:
-Main Notebook
+![Python](https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge&logo=python)
+![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-red?style=for-the-badge&logo=pytorch)
+![Jupyter](https://img.shields.io/badge/Jupyter-Notebook-orange?style=for-the-badge&logo=jupyter)
+![Classification](https://img.shields.io/badge/Project-Classification%20Based-success?style=for-the-badge)
+![Status](https://img.shields.io/badge/Status-Experimental-informational?style=for-the-badge)
+
+</div>
+
+---
+
+## 📌 Overview
+
+This repository presents a **deep learning-based workflow** for **potato leaf disease classification** in **uncontrolled field conditions**. Unlike laboratory datasets with clean backgrounds and uniform image quality, this project focuses on realistic agricultural scenes containing **background clutter, irregular lighting, overlapping leaves, shadows, and visual noise**.
+
+The repository covers the complete experimental pipeline, including:
+
+- dataset preparation  
+- preprocessing and augmentation  
+- multi-model training  
+- seven-class and binary classification experiments  
+- evaluation and comparative analysis  
+- result visualization and summary storage  
+
+---
+
+## ✨ Key Highlights
+
+- **3,076 potato leaf images** collected in uncontrolled field conditions  
+- **7 original classes:** Bacteria, Fungi, Healthy, Nematode, Pest, Phytophthora, and Virus  
+- Comparative experiments with **EfficientNet-B0**, **DenseNet121**, **EfficientNet-B2**, and **LeafFocus-AttentionNet Lite**  
+- A lightweight attention-based model: **LeafFocus-AttentionNet Lite**  
+- A practical reformulation from **multiclass diagnosis** to **binary Healthy vs Diseased screening**  
+- Best overall result achieved by **Binary EfficientNet-B2 + TTA**  
+- **Final Test Accuracy:** **95.67%**  
+- **Final Test Macro F1-Score:** **85.66%**  
+
+---
+
+## 📚 Table of Contents
+
+- [Project Motivation](#-project-motivation)
+- [Project Objective](#-project-objective)
+- [Dataset Description](#-dataset-description)
+- [Main Notebook](#-main-notebook)
+- [Methodology](#-methodology)
+- [Models Explored](#-models-explored)
+- [Proposed Model](#-proposed-model)
+- [Novelty of the Work](#-novelty-of-the-work)
+- [Results](#-results)
+- [Project Structure](#-project-structure)
+- [Training Setup](#-training-setup)
+- [How to Run](#-how-to-run)
+- [Requirements](#-requirements)
+- [Reproducibility Notes](#-reproducibility-notes)
+- [Limitations](#-limitations)
+- [Future Work](#-future-work)
+- [Author](#-author)
+- [License](#-license)
+- [Acknowledgment](#-acknowledgment)
+
+---
+
+## 🎯 Project Motivation
+
+Potato is one of the most important food crops worldwide, but its productivity is strongly affected by leaf diseases, infections, and pest-related damage. In real agricultural environments, disease recognition becomes difficult because images are rarely captured under ideal conditions.
+
+Traditional manual inspection is time-consuming and depends heavily on expert knowledge. This project explores how **deep learning-based visual classification** can support **faster, more reliable, and practical disease screening** for potato leaves under realistic field conditions.
+
+---
+
+## 🧠 Project Objective
+
+The main objective of this project is to investigate how effectively deep learning models can classify potato leaf images in complex field environments.
+
+This work specifically focuses on:
+
+- evaluating transfer learning backbones for field-condition classification  
+- studying multiclass disease recognition under real-world variability  
+- proposing a lightweight attention-guided architecture  
+- improving robustness through a **deployment-oriented binary reformulation**  
+- organizing the complete workflow in a clean and reproducible project structure  
+
+---
+
+## 🗂️ Dataset Description
+
+The dataset used in this project contains **3,076 potato leaf images** captured in **uncontrolled field conditions**. The images include practical agricultural challenges such as:
+
+- cluttered backgrounds  
+- inconsistent illumination  
+- overlapping vegetation  
+- soil interference  
+- shadow effects  
+- viewpoint and distance variation  
+
+### 📊 Original Seven-Class Distribution
+
+| Class | Number of Images |
+|------|------------------:|
+| Bacteria | 569 |
+| Fungi | 748 |
+| Healthy | 201 |
+| Nematode | 68 |
+| Pest | 611 |
+| Phytophthora | 347 |
+| Virus | 532 |
+| **Total** | **3076** |
+
+### 🔄 Binary Reformulation
+
+For practical deployment, the original seven-class task was also reformulated into a **binary classification problem**:
+
+- **Healthy**
+- **Diseased** *(Bacteria, Fungi, Nematode, Pest, Phytophthora, and Virus merged together)*
+
+### 📈 Binary Split Distribution
+
+| Split | Healthy | Diseased | Total |
+|------|--------:|---------:|------:|
+| Train | 141 | 2012 | 2153 |
+| Validation | 30 | 431 | 461 |
+| Test | 30 | 432 | 462 |
+| **Total** | **201** | **2875** | **3076** |
+
+---
+
+## 📓 Main Notebook
+
 The primary notebook used in this project is:
+
+```bash
 potato_leave.ipynb
-This notebook contains the major workflow of the research project, which may include:
+⚙️ Methodology
 
-dataset loading
+The overall workflow followed in this project can be summarized as follows:
 
-preprocessing
+1. Data Collection
 
-train/validation/test splitting
+Potato leaf images were gathered from a selected field-condition dataset for disease classification.
 
-model definition
+2. Data Validation and Preparation
 
-training loops
+Image paths were verified and corruption checks were performed before training. The dataset was then organized for experimentation.
 
-evaluation metrics
+3. Stratified Train/Validation/Test Split
 
-result saving
+To preserve label distribution, the dataset was split using a 70% / 15% / 15% strategy.
 
-visualization of outputs
+4. Preprocessing
 
-Experimental Components
+Since transfer learning models pre-trained on ImageNet were used, images were normalized using ImageNet mean and standard deviation values.
 
-This research project includes multiple experiment folders, which may represent different training runs or model configurations such as:
+5. Data Augmentation
 
-Baseline EfficientNet-B0
+Training images were augmented to improve generalization. The final binary pipeline used strategies such as:
 
-Baseline EfficientNet-B0 Fixed
+random resized crop
 
-Baseline EfficientNet-B2
+horizontal flip
 
-Baseline DenseNet121
+small random rotations
+
+color jitter
+
+6. Comparative Modeling
+
+Multiple deep learning backbones were compared on the original seven-class problem to identify the most reliable architecture under uncontrolled field conditions.
+
+7. Attention-Based Modeling
+
+A lightweight custom model, LeafFocus-AttentionNet Lite, was developed to improve focus on disease-related regions.
+
+8. Binary Reformulation
+
+Because fine-grained seven-class classification remained difficult in real field conditions, the problem was reformulated into Healthy vs Diseased screening for better practical applicability.
+
+9. Final Inference Enhancement
+
+Test-Time Augmentation (TTA) was applied to the final binary model by averaging predictions from multiple transformed views of the same test image.
+🧪 Models Explored
+
+This project includes comparative experiments with the following architectures:
+
+EfficientNet-B0
+
+DenseNet121
+
+EfficientNet-B2
+
+LeafFocus-AttentionNet Lite
+
+EfficientNet-B2 + DenseNet121 Ensemble
 
 Binary EfficientNet-B2
 
-LeafFocus AttentionNet Lite
+Binary EfficientNet-B2 + TTA
 
-These folders help organize different model outputs, histories, and result files for comparative research analysis.
+🧾 Experiment Summary
+| Model                                  | Experiment Type | Purpose                              |
+| -------------------------------------- | --------------- | ------------------------------------ |
+| EfficientNet-B0                        | Multiclass      | Baseline comparison                  |
+| DenseNet121                            | Multiclass      | Strong CNN baseline                  |
+| EfficientNet-B2                        | Multiclass      | Best-performing baseline backbone    |
+| LeafFocus-AttentionNet Lite            | Multiclass      | Attention-guided custom architecture |
+| EfficientNet-B2 + DenseNet121 Ensemble | Multiclass      | Combined prediction strategy         |
+| Binary EfficientNet-B2                 | Binary          | Practical disease screening          |
+| Binary EfficientNet-B2 + TTA           | Binary          | Best final deployment-oriented model |
 
-Methodology
+🌿 Proposed Model
+LeafFocus-AttentionNet Lite
 
-The overall methodology followed in this work can be summarized as:
+LeafFocus-AttentionNet Lite is the lightweight attention-based architecture explored in this project. It is built on top of EfficientNet-B2 features and is designed to improve the model’s ability to focus on disease-related leaf regions instead of irrelevant background details.
 
-Data Collection
-Potato leaf images were gathered from the selected dataset source for disease classification research.
+🔧 Core Components
 
-Data Preparation
-The dataset was cleaned, organized, and split into training, validation, and testing sets.
+EfficientNet-B2 feature extractor backbone
 
-Preprocessing
-Image preprocessing and pipeline setup were applied before model training.
+Channel Attention Lite for channel-wise feature reweighting
 
-Baseline Training
-Multiple baseline deep learning models were trained for comparison.
+Spatial Attention Lite for region-wise emphasis
 
-Binary Classification Experiment
-A binary setup was used for a focused disease-vs-other or healthy-vs-diseased style analysis, depending on the experiment design.
+GeM Pooling for stronger global feature representation
 
-Attention-Based Modeling
-An attention-based architecture was explored to improve feature learning and classification quality.
+Batch Normalization + Dropout + Fully Connected Layer
 
-Evaluation and Analysis
-Results were evaluated using saved outputs such as training histories, plots, confusion matrices, ROC curves, and summary files.
+🎯 Intended Benefit
 
-Features of This Repository
+The purpose of this architecture is to help the network attend more strongly to:
 
-research-oriented notebook workflow
+lesion patterns
 
-multiple deep learning experiment folders
+discoloration
 
-binary and baseline classification results
+texture changes
 
-attention-based model experiment
+infected leaf regions
 
-training history files
+while reducing the impact of:
 
-visual evaluation outputs
+soil
 
-lightweight repository structure without heavy dataset and model weight uploads
+shadows
 
-Files Included
+overlapping leaves
 
-This repository may include the following types of files:
+background clutter
+📊 Results
+🟢 Seven-Class Classification Results
+| Model                                  | Test Accuracy (%) | Test Macro F1 (%) |
+| -------------------------------------- | ----------------: | ----------------: |
+| EfficientNet-B0                        |             73.59 |             70.41 |
+| DenseNet121                            |             78.14 |             74.37 |
+| EfficientNet-B2                        |             79.65 |             74.90 |
+| LeafFocus-AttentionNet Lite            |             75.97 |             72.64 |
+| EfficientNet-B2 + DenseNet121 Ensemble |         **80.74** |         **75.08** |
+🔵 Final Binary Classification Results
+| Model                        | Test Accuracy (%) | Test Macro F1 (%) |
+| ---------------------------- | ----------------: | ----------------: |
+| Binary EfficientNet-B2       |             95.24 |             84.95 |
+| Binary EfficientNet-B2 + TTA |         **95.67** |         **85.66** |
 
-.ipynb notebook files
+📌 Result Interpretation
 
-.csv training history files
+The seven-class classification setting was academically valuable but challenging under uncontrolled field conditions because of:
 
-.png result visualizations
-
-.txt final summaries
-
-experiment folders containing lightweight outputs
-
-Files Excluded
-
-The following files are intentionally excluded from GitHub:
-
-full dataset images
-
-copied train/validation/test image folders
-
-model weight files such as .pth, .pt, .h5
-
-compressed dataset archives
-
-temporary runtime files
-
-This is done to keep the repository clean and within GitHub size limits.
-
-Results
-
-The project stores important research outputs in the results/ folder and experiment-specific directories. These outputs may include:
-
-training and validation plots
-
-confusion matrices
-
-ROC curves
-
-performance summaries
-
-history logs in CSV format
-
-Replace this section with your final best model results if you want to highlight exact accuracy, F1-score, precision, recall, or AUC values.
-
-Example format:
-
-Best model: LeafFocus AttentionNet Lite
-
-Task: Potato leaf disease classification
-
-Validation Accuracy: Add your value
-
-Test Accuracy: Add your value
-
-Macro F1-Score: Add your value
-
-How to Run
+inter-class similarity
+class imbalance
+visually complex backgrounds
+The binary Healthy vs Diseased setting proved to be significantly more robust and practical for real-world deployment.
+💻 How to Run
 1. Clone the repository
-git clone https://github.com/Wajiha-Babar/Potato-Leaf-Disease-Research.git
-cd Potato-Leaf-Disease-Research
+git clone https://github.com/Wajiha-Babar/Potato-Leaf-Disease--Classification-.git
+cd Potato-Leaf-Disease-Classification
 2. Install dependencies
 pip install -r requirements.txt
 3. Open the notebook
-
 Run the main notebook in:
-
 Jupyter Notebook
-
 JupyterLab
-
 Google Colab
-
-Main file:
-
+Main notebook:
 potato_leave.ipynb
-Requirements
+📦 Requirements
 
-Typical Python libraries used in this type of project may include:
+Typical libraries used in this project may include:
 
 Python 3.x
-
 NumPy
-
 Pandas
-
 Matplotlib
-
 Seaborn
-
 Scikit-learn
-
 PyTorch
-
 Torchvision
-
 OpenCV
-
 Pillow
+You can create a requirements.txt file based on the exact dependencies used in your notebook.
+🔁 Reproducibility Notes
 
-You can create a requirements.txt file based on the exact libraries used in your notebook.
-
-Notes for Reproducibility
-
-To reproduce the full project, users may need:
+To reproduce this project, users may need:
 
 the original potato leaf dataset
 
-proper folder paths updated inside the notebook
+correct dataset paths inside the notebook
 
-the same Python and library environment
+the same Python and library versions
 
-sufficient compute resources for training deep learning models
+sufficient compute resources for training
 
-Because large dataset files and trained weights are not uploaded here, this repository mainly serves as a research code and results archive.
+Because large datasets and trained model weights are not uploaded here, this repository mainly serves as a:
 
-Limitations
+project code archive
 
-Some practical limitations of this repository include:
+experimental workflow record
+
+result visualization repository
+
+comparative deep learning study
+
+⚠️ Limitations
+
+Some practical limitations of this project include:
 
 large dataset files are not included
 
-trained weight files are excluded
+trained model weights are excluded
 
 exact reproduction may require path adjustments
 
-runtime results may vary depending on hardware and environment
+final metrics may vary depending on environment and hardware
 
-Future Improvements
+binary classification does not directly provide exact disease subtype prediction
+👩‍💻 Author
 
-Possible future improvements for this project include:
-
-adding a dedicated src/ folder for clean modular code
-
-including a complete requirements.txt file
-
-adding Grad-CAM or explainability analysis
-
-improving README with exact final metrics
-
-publishing a lighter inference demo version
-
-extending to more robust field-condition classification experiments
-
-Author
 Wajiha Babar
 Software Engineering Student
-Deep Learning / Data Science / Research Projects
-License
-This project is shared for academic and research purposes.
-You may update this section according to your preferred license.
-Acknowledgment
-This work was developed as part of a research-focused deep learning study on potato leaf disease classification and experimental model comparison.
+Deep Learning / Data Science / Classification Projects
+
+📄 License
+
+This project is shared for academic and educational purposes.
+
+You may later update this section with your preferred license, such as:
+
+MIT License
+
+Apache License 2.0
+
+GNU GPL
+
+Custom Academic Use License
+
+🙏 Acknowledgment
+
+This project reflects a deep learning-based study on potato leaf disease classification under uncontrolled field conditions, with emphasis on:
+
+comparative transfer learning
+
+attention-guided experimentation
+
+binary disease screening
+
+practical agricultural deployment relevance
