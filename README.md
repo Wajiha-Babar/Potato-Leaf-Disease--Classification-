@@ -487,8 +487,3 @@ This project reflects a deep learning-based study on potato leaf disease classif
 
 ---
 
-<div align="center">
-
-### ⭐ If this repository helps you, consider giving it a star.
-
-</div>
