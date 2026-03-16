@@ -38,7 +38,7 @@ The repository covers the complete experimental pipeline, including:
 - A practical reformulation from **multiclass diagnosis** to **binary Healthy vs Diseased screening**  
 - Best overall result achieved by **Binary EfficientNet-B2 + TTA**  
 - **Final Test Accuracy:** **95.67%**  
-- **Final Test Macro F1-Score:** **85.66%**  
+- **Final Test Macro F1-Score:** **85.66%**
 
 ---
 
@@ -136,234 +136,359 @@ The primary notebook used in this project is:
 
 ```bash
 potato_leave.ipynb
-⚙️ Methodology
+```
+
+This notebook contains the major workflow of the project, including:
+
+- dataset loading  
+- path validation and cleaning  
+- preprocessing  
+- train/validation/test splitting  
+- augmentation setup  
+- model definition  
+- training loops  
+- evaluation metrics  
+- result saving  
+- visualization of outputs  
+
+---
+
+## ⚙️ Methodology
 
 The overall workflow followed in this project can be summarized as follows:
 
-1. Data Collection
-
+### 1. Data Collection
 Potato leaf images were gathered from a selected field-condition dataset for disease classification.
 
-2. Data Validation and Preparation
-
+### 2. Data Validation and Preparation
 Image paths were verified and corruption checks were performed before training. The dataset was then organized for experimentation.
 
-3. Stratified Train/Validation/Test Split
+### 3. Stratified Train/Validation/Test Split
+To preserve label distribution, the dataset was split using a **70% / 15% / 15%** strategy.
 
-To preserve label distribution, the dataset was split using a 70% / 15% / 15% strategy.
+### 4. Preprocessing
+Since transfer learning models pre-trained on ImageNet were used, images were normalized using **ImageNet mean and standard deviation** values.
 
-4. Preprocessing
-
-Since transfer learning models pre-trained on ImageNet were used, images were normalized using ImageNet mean and standard deviation values.
-
-5. Data Augmentation
-
+### 5. Data Augmentation
 Training images were augmented to improve generalization. The final binary pipeline used strategies such as:
 
-random resized crop
+- random resized crop  
+- horizontal flip  
+- small random rotations  
+- color jitter  
 
-horizontal flip
-
-small random rotations
-
-color jitter
-
-6. Comparative Modeling
-
+### 6. Comparative Modeling
 Multiple deep learning backbones were compared on the original seven-class problem to identify the most reliable architecture under uncontrolled field conditions.
 
-7. Attention-Based Modeling
+### 7. Attention-Based Modeling
+A lightweight custom model, **LeafFocus-AttentionNet Lite**, was developed to improve focus on disease-related regions.
 
-A lightweight custom model, LeafFocus-AttentionNet Lite, was developed to improve focus on disease-related regions.
+### 8. Binary Reformulation
+Because fine-grained seven-class classification remained difficult in real field conditions, the problem was reformulated into **Healthy vs Diseased** screening for better practical applicability.
 
-8. Binary Reformulation
+### 9. Final Inference Enhancement
+**Test-Time Augmentation (TTA)** was applied to the final binary model by averaging predictions from multiple transformed views of the same test image.
 
-Because fine-grained seven-class classification remained difficult in real field conditions, the problem was reformulated into Healthy vs Diseased screening for better practical applicability.
+---
 
-9. Final Inference Enhancement
-
-Test-Time Augmentation (TTA) was applied to the final binary model by averaging predictions from multiple transformed views of the same test image.
-🧪 Models Explored
+## 🧪 Models Explored
 
 This project includes comparative experiments with the following architectures:
 
-EfficientNet-B0
+- **EfficientNet-B0**
+- **DenseNet121**
+- **EfficientNet-B2**
+- **LeafFocus-AttentionNet Lite**
+- **EfficientNet-B2 + DenseNet121 Ensemble**
+- **Binary EfficientNet-B2**
+- **Binary EfficientNet-B2 + TTA**
 
-DenseNet121
+### 🧾 Experiment Summary
 
-EfficientNet-B2
+| Model | Experiment Type | Purpose |
+|------|------------------|---------|
+| EfficientNet-B0 | Multiclass | Baseline comparison |
+| DenseNet121 | Multiclass | Strong CNN baseline |
+| EfficientNet-B2 | Multiclass | Best-performing baseline backbone |
+| LeafFocus-AttentionNet Lite | Multiclass | Attention-guided custom architecture |
+| EfficientNet-B2 + DenseNet121 Ensemble | Multiclass | Combined prediction strategy |
+| Binary EfficientNet-B2 | Binary | Practical disease screening |
+| Binary EfficientNet-B2 + TTA | Binary | Best final deployment-oriented model |
 
-LeafFocus-AttentionNet Lite
+---
 
-EfficientNet-B2 + DenseNet121 Ensemble
+## 🌿 Proposed Model
 
-Binary EfficientNet-B2
+### **LeafFocus-AttentionNet Lite**
 
-Binary EfficientNet-B2 + TTA
+**LeafFocus-AttentionNet Lite** is the lightweight attention-based architecture explored in this project. It is built on top of **EfficientNet-B2** features and is designed to improve the model’s ability to focus on disease-related leaf regions instead of irrelevant background details.
 
-🧾 Experiment Summary
-| Model                                  | Experiment Type | Purpose                              |
-| -------------------------------------- | --------------- | ------------------------------------ |
-| EfficientNet-B0                        | Multiclass      | Baseline comparison                  |
-| DenseNet121                            | Multiclass      | Strong CNN baseline                  |
-| EfficientNet-B2                        | Multiclass      | Best-performing baseline backbone    |
-| LeafFocus-AttentionNet Lite            | Multiclass      | Attention-guided custom architecture |
-| EfficientNet-B2 + DenseNet121 Ensemble | Multiclass      | Combined prediction strategy         |
-| Binary EfficientNet-B2                 | Binary          | Practical disease screening          |
-| Binary EfficientNet-B2 + TTA           | Binary          | Best final deployment-oriented model |
+### 🔧 Core Components
 
-🌿 Proposed Model
-LeafFocus-AttentionNet Lite
+- **EfficientNet-B2** feature extractor backbone  
+- **Channel Attention Lite** for channel-wise feature reweighting  
+- **Spatial Attention Lite** for region-wise emphasis  
+- **GeM Pooling** for stronger global feature representation  
+- **Batch Normalization + Dropout + Fully Connected Layer**
 
-LeafFocus-AttentionNet Lite is the lightweight attention-based architecture explored in this project. It is built on top of EfficientNet-B2 features and is designed to improve the model’s ability to focus on disease-related leaf regions instead of irrelevant background details.
-
-🔧 Core Components
-
-EfficientNet-B2 feature extractor backbone
-
-Channel Attention Lite for channel-wise feature reweighting
-
-Spatial Attention Lite for region-wise emphasis
-
-GeM Pooling for stronger global feature representation
-
-Batch Normalization + Dropout + Fully Connected Layer
-
-🎯 Intended Benefit
+### 🎯 Intended Benefit
 
 The purpose of this architecture is to help the network attend more strongly to:
 
-lesion patterns
-
-discoloration
-
-texture changes
-
-infected leaf regions
+- lesion patterns  
+- discoloration  
+- texture changes  
+- infected leaf regions  
 
 while reducing the impact of:
 
-soil
+- soil  
+- shadows  
+- overlapping leaves  
+- background clutter  
 
-shadows
+---
 
-overlapping leaves
+## 🚀 Novelty of the Work
 
-background clutter
-📊 Results
-🟢 Seven-Class Classification Results
-| Model                                  | Test Accuracy (%) | Test Macro F1 (%) |
-| -------------------------------------- | ----------------: | ----------------: |
-| EfficientNet-B0                        |             73.59 |             70.41 |
-| DenseNet121                            |             78.14 |             74.37 |
-| EfficientNet-B2                        |             79.65 |             74.90 |
-| LeafFocus-AttentionNet Lite            |             75.97 |             72.64 |
-| EfficientNet-B2 + DenseNet121 Ensemble |         **80.74** |         **75.08** |
-🔵 Final Binary Classification Results
-| Model                        | Test Accuracy (%) | Test Macro F1 (%) |
-| ---------------------------- | ----------------: | ----------------: |
-| Binary EfficientNet-B2       |             95.24 |             84.95 |
-| Binary EfficientNet-B2 + TTA |         **95.67** |         **85.66** |
+The novelty of this project is based on the **combination of three practical contributions**:
 
-📌 Result Interpretation
+### 1. Comparative Transfer Learning Strategy
+Multiple strong backbones were evaluated instead of relying on a single default architecture.
+
+### 2. Attention-Guided Lightweight Architecture
+A custom model, **LeafFocus-AttentionNet Lite**, was introduced using **channel attention**, **spatial attention**, and **GeM pooling**.
+
+### 3. Deployment-Oriented Problem Reformulation
+The difficult seven-class disease classification problem was reformulated into a more practical and robust **Healthy vs Diseased** binary screening task.
+
+---
+
+## 📊 Results
+
+### 🟢 Seven-Class Classification Results
+
+| Model | Test Accuracy (%) | Test Macro F1 (%) |
+|------|-------------------:|------------------:|
+| EfficientNet-B0 | 73.59 | 70.41 |
+| DenseNet121 | 78.14 | 74.37 |
+| EfficientNet-B2 | 79.65 | 74.90 |
+| LeafFocus-AttentionNet Lite | 75.97 | 72.64 |
+| EfficientNet-B2 + DenseNet121 Ensemble | **80.74** | **75.08** |
+
+### 🔵 Final Binary Classification Results
+
+| Model | Test Accuracy (%) | Test Macro F1 (%) |
+|------|-------------------:|------------------:|
+| Binary EfficientNet-B2 | 95.24 | 84.95 |
+| Binary EfficientNet-B2 + TTA | **95.67** | **85.66** |
+
+### 📌 Result Interpretation
 
 The seven-class classification setting was academically valuable but challenging under uncontrolled field conditions because of:
 
-inter-class similarity
-class imbalance
-visually complex backgrounds
-The binary Healthy vs Diseased setting proved to be significantly more robust and practical for real-world deployment.
-💻 How to Run
-1. Clone the repository
+- inter-class similarity  
+- class imbalance  
+- visually complex backgrounds  
+
+The binary **Healthy vs Diseased** setting proved to be significantly more robust and practical for real-world deployment.
+
+---
+
+## 📈 Why the Binary Model Performed Better
+
+The final binary model performed better because it aligns more closely with real agricultural decision-making. In practical crop monitoring, the first and most important question is often:
+
+> **Is the leaf healthy or diseased?**
+
+This simplified but highly practical task allowed the model to achieve stronger performance, with **95.67% test accuracy** using **EfficientNet-B2 + TTA**.
+
+---
+
+## 🗂️ Project Structure
+
+A possible repository structure may look like this:
+
+```text
+Potato-Leaf-Disease-Classification/
+│
+├── potato_leave.ipynb
+├── README.md
+├── requirements.txt
+│
+├── results/
+│   ├── plots/
+│   ├── confusion_matrices/
+│   ├── roc_curves/
+│   ├── summaries/
+│   └── histories/
+│
+├── Baseline_EfficientNet_B0/
+├── Baseline_EfficientNet_B0_Fixed/
+├── Baseline_EfficientNet_B2/
+├── Baseline_DenseNet121/
+├── Binary_EfficientNet_B2/
+├── LeafFocus_AttentionNet_Lite/
+│
+└── other_experiment_outputs/
+```
+
+> **Note:** The exact folder structure may vary depending on your local project organization.
+
+---
+
+## 🧰 Training Setup
+
+The final training strategy for the binary **EfficientNet-B2** model included:
+
+- **Loss Function:** Class-weighted CrossEntropyLoss with label smoothing  
+- **Optimizer:** AdamW  
+- **Scheduler:** CosineAnnealingLR  
+- **Mixed Precision:** Enabled  
+- **Early Stopping:** Applied  
+- **Two-Stage Training:**  
+  - head-only training  
+  - full fine-tuning  
+
+### 🔄 Test-Time Augmentation (TTA)
+
+The final inference stage used prediction averaging from multiple views:
+
+- standard resized image  
+- horizontally flipped image  
+- resized + center cropped image  
+
+---
+
+## 💻 How to Run
+
+### 1. Clone the repository
+
+```bash
 git clone https://github.com/Wajiha-Babar/Potato-Leaf-Disease--Classification-.git
-cd Potato-Leaf-Disease-Classification
-2. Install dependencies
+cd Potato-Leaf-Disease--Classification-
+```
+
+### 2. Install dependencies
+
+```bash
 pip install -r requirements.txt
-3. Open the notebook
+```
+
+### 3. Open the notebook
+
 Run the main notebook in:
-Jupyter Notebook
-JupyterLab
-Google Colab
+
+- **Jupyter Notebook**
+- **JupyterLab**
+- **Google Colab**
+
 Main notebook:
+
+```bash
 potato_leave.ipynb
-📦 Requirements
+```
+
+---
+
+## 📦 Requirements
 
 Typical libraries used in this project may include:
 
-Python 3.x
-NumPy
-Pandas
-Matplotlib
-Seaborn
-Scikit-learn
-PyTorch
-Torchvision
-OpenCV
-Pillow
-You can create a requirements.txt file based on the exact dependencies used in your notebook.
-🔁 Reproducibility Notes
+- **Python 3.x**
+- **NumPy**
+- **Pandas**
+- **Matplotlib**
+- **Seaborn**
+- **Scikit-learn**
+- **PyTorch**
+- **Torchvision**
+- **OpenCV**
+- **Pillow**
+
+You can create a `requirements.txt` file based on the exact dependencies used in your notebook.
+
+---
+
+## 🔁 Reproducibility Notes
 
 To reproduce this project, users may need:
 
-the original potato leaf dataset
-
-correct dataset paths inside the notebook
-
-the same Python and library versions
-
-sufficient compute resources for training
+- the original potato leaf dataset  
+- correct dataset paths inside the notebook  
+- the same Python and library versions  
+- sufficient compute resources for training  
 
 Because large datasets and trained model weights are not uploaded here, this repository mainly serves as a:
 
-project code archive
+- **project code archive**  
+- **experimental workflow record**  
+- **result visualization repository**  
+- **comparative deep learning study**  
 
-experimental workflow record
+---
 
-result visualization repository
-
-comparative deep learning study
-
-⚠️ Limitations
+## ⚠️ Limitations
 
 Some practical limitations of this project include:
 
-large dataset files are not included
+- large dataset files are not included  
+- trained model weights are excluded  
+- exact reproduction may require path adjustments  
+- final metrics may vary depending on environment and hardware  
+- binary classification does not directly provide exact disease subtype prediction  
 
-trained model weights are excluded
+---
 
-exact reproduction may require path adjustments
+## 🔮 Future Work
 
-final metrics may vary depending on environment and hardware
+Possible future improvements include:
 
-binary classification does not directly provide exact disease subtype prediction
-👩‍💻 Author
+- building a **two-stage pipeline**  
+  - Stage 1: Healthy vs Diseased  
+  - Stage 2: disease subtype classification only for diseased leaves  
+- collecting a more balanced and diverse field dataset  
+- adding lesion localization or segmentation  
+- incorporating explainability methods such as **Grad-CAM**  
+- optimizing lighter models for mobile or edge deployment  
+- combining image-based learning with environmental signals such as weather, soil, or humidity data  
 
-Wajiha Babar
-Software Engineering Student
-Deep Learning / Data Science / Classification Projects
+---
 
-📄 License
+## 👩‍💻 Author
 
-This project is shared for academic and educational purposes.
+**Wajiha Babar**  
+*Software Engineering Student*  
+*Deep Learning / Data Science / Classification Projects*
+
+---
+
+## 📄 License
+
+This project is shared for **academic and educational purposes**.
 
 You may later update this section with your preferred license, such as:
 
-MIT License
+- MIT License  
+- Apache License 2.0  
+- GNU GPL  
+- Custom Academic Use License  
 
-Apache License 2.0
+---
 
-GNU GPL
-
-Custom Academic Use License
-
-🙏 Acknowledgment
+## 🙏 Acknowledgment
 
 This project reflects a deep learning-based study on potato leaf disease classification under uncontrolled field conditions, with emphasis on:
 
-comparative transfer learning
+- comparative transfer learning  
+- attention-guided experimentation  
+- binary disease screening  
+- practical agricultural deployment relevance  
 
-attention-guided experimentation
+---
 
-binary disease screening
+<div align="center">
 
-practical agricultural deployment relevance
+### ⭐ If this repository helps you, consider giving it a star.
+
+</div>
