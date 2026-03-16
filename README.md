@@ -51,7 +51,6 @@ The repository covers the complete experimental pipeline, including:
 - [Methodology](#-methodology)
 - [Models Explored](#-models-explored)
 - [Proposed Model](#-proposed-model)
-- [Novelty of the Work](#-novelty-of-the-work)
 - [Results](#-results)
 - [Project Structure](#-project-structure)
 - [Training Setup](#-training-setup)
@@ -249,18 +248,6 @@ while reducing the impact of:
 
 ---
 
-## 🚀 Novelty of the Work
-
-The novelty of this project is based on the **combination of three practical contributions**:
-
-### 1. Comparative Transfer Learning Strategy
-Multiple strong backbones were evaluated instead of relying on a single default architecture.
-
-### 2. Attention-Guided Lightweight Architecture
-A custom model, **LeafFocus-AttentionNet Lite**, was introduced using **channel attention**, **spatial attention**, and **GeM pooling**.
-
-### 3. Deployment-Oriented Problem Reformulation
-The difficult seven-class disease classification problem was reformulated into a more practical and robust **Healthy vs Diseased** binary screening task.
 
 ---
 
