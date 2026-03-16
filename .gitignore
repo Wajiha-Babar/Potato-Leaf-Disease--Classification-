@@ -1,0 +1,17 @@
+splits/
+binary_splits/
+dataset/
+datasets/
+data/
+*.zip
+*.pt
+*.pth
+*.h5
+*.ckpt
+*.pt
+*.pth
+*.h5
+__pycache__/
+.ipynb_checkpoints/
+venv/
+.venv/

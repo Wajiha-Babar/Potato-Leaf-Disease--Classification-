@@ -1,0 +1,13 @@
+
+FINAL BEST RESULT
+=================
+Model: Binary EfficientNet-B2 + TTA
+Task: Healthy vs Diseased
+Validation Accuracy: 0.9523
+Validation Macro F1: 0.8528
+Test Accuracy: 0.9567
+Test Macro F1: 0.8566
+
+Important Note:
+This 95.67% result belongs to BINARY classification only.
+It should not be reported as 7-class potato disease classification accuracy.
